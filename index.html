@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designer Tools — Micro App Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0e;
+    --bg2: #141416;
+    --bg3: #1c1c20;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0efe8;
+    --muted: #888580;
+    --accent: #c8f060;
+    --accent2: #7fbbf0;
+    --accent3: #f0a060;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'Sora', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(12,12,14,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--font-display); font-size: 20px; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-links button {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 14px; border-radius: 999px; font-family: var(--font-body);
+    font-size: 13px; cursor: pointer; transition: all .18s;
+  }
+  .nav-links button:hover, .nav-links button.active { border-color: var(--accent); color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 32px 60px;
+    max-width: 820px; margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,240,96,0.1); border: 1px solid rgba(200,240,96,0.25);
+    color: var(--accent); font-size: 12px; font-weight: 500; letter-spacing: .08em;
+    padding: 5px 14px; border-radius: 999px; margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: clamp(42px, 7vw, 72px);
+    line-height: 1.08; color: var(--text); margin-bottom: 20px;
+    font-weight: 400;
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero p { font-size: 17px; color: var(--muted); max-width: 540px; margin: 0 auto 36px; line-height: 1.7; }
+  .hero-stats { display: flex; justify-content: center; gap: 40px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: var(--font-display); font-size: 32px; color: var(--text); }
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── CATEGORY FILTERS ── */
+  .filters {
+    display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+    padding: 0 32px 40px;
+  }
+  .filter-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 18px;
+    border-radius: 999px; font-family: var(--font-body);
+    font-size: 13px; cursor: pointer; transition: all .18s;
+  }
+  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #0c0c0e; font-weight: 600; }
+
+  /* ── TOOLS GRID ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    padding: 0 32px 80px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .tool-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s;
+    display: flex; flex-direction: column;
+  }
+  .tool-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .tool-card.hidden { display: none; }
+  .card-preview {
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    position: relative; overflow: hidden;
+  }
+  .card-body { padding: 18px 20px 20px; flex: 1; }
+  .card-cat {
+    font-size: 11px; font-weight: 500; letter-spacing: .08em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .card-title { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .card-open {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500; color: var(--text);
+    background: var(--bg3); border: 1px solid var(--border2);
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all .15s; font-family: var(--font-body);
+  }
+  .card-open:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+    align-items: flex-start; justify-content: center;
+    padding: 40px 16px; overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; width: 100%; max-width: 680px;
+    overflow: hidden; position: relative; margin: auto;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+  }
+  .modal-title { font-family: var(--font-display); font-size: 22px; color: var(--text); }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--muted); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--border2); }
+  .modal-body { padding: 28px 24px; }
+
+  /* ── TOOL SHARED STYLES ── */
+  .tool-label { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  .tool-input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text); padding: 10px 14px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 14px; outline: none;
+    transition: border-color .15s;
+  }
+  .tool-input:focus { border-color: var(--accent); }
+  .tool-row { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-end; }
+  .tool-col { flex: 1; }
+  .tool-btn {
+    background: var(--accent); color: #0c0c0e; border: none;
+    padding: 10px 20px; border-radius: var(--radius-sm); font-family: var(--font-body);
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .tool-btn:hover { opacity: .88; }
+  .tool-btn.secondary {
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text); font-weight: 400;
+  }
+  .tool-result {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--text); margin-top: 16px; min-height: 60px;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .result-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .badge { display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge-pass { background: rgba(100,220,120,.15); color: #64dc78; }
+  .badge-fail { background: rgba(240,100,80,.15); color: #f06450; }
+  .swatch { display: inline-block; width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); vertical-align: middle; margin-right: 8px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); margin: 4px 0; }
+  select.tool-input { cursor: pointer; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .color-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .color-chip { height: 44px; border-radius: 6px; flex: 1; min-width: 36px; cursor: pointer; transition: transform .1s; position: relative; }
+  .color-chip:hover { transform: scaleY(1.06); }
+
+  /* card accent backgrounds */
+  .bg-purple { background: linear-gradient(135deg, #1a1428 0%, #2d1f4e 100%); }
+  .bg-teal   { background: linear-gradient(135deg, #0d1f1a 0%, #0f3d2e 100%); }
+  .bg-coral  { background: linear-gradient(135deg, #1f130e 0%, #3d1f0f 100%); }
+  .bg-amber  { background: linear-gradient(135deg, #1f1508 0%, #3d2a08 100%); }
+  .text-purple { color: #b08aff; }
+  .text-teal   { color: #4fd4a0; }
+  .text-coral  { color: #f0855a; }
+  .text-amber  { color: var(--accent3); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer strong { color: var(--text); font-weight: 500; }
+  .footer-tags { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .footer-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    border: 1px solid var(--border); padding: 3px 10px;
+    border-radius: 4px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">design<span>kit</span></a>
+  <div class="nav-links">
+    <button class="active" onclick="showSection('home')">Home</button>
+    <button onclick="showSection('tools')">All Tools</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="section-home">
+  <div class="hero-eyebrow">✦ 16 micro apps</div>
+  <h1>Tools built for<br><em>designers</em> who ship.</h1>
+  <p>Every tool you reach for in a new tab, now in one place. No login, no ads, no friction — just instant design utilities.</p>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">16</div><div class="stat-label">Tools</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Categories</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Sign-ups needed</div></div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<div class="filters" id="section-tools">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All tools</button>
+  <button class="filter-btn" onclick="filterCards('color', this)">Color &amp; Type</button>
+  <button class="filter-btn" onclick="filterCards('layout', this)">Layout</button>
+  <button class="filter-btn" onclick="filterCards('copy', this)">Assets &amp; Copy</button>
+  <button class="filter-btn" onclick="filterCards('handoff', this)">Handoff</button>
+</div>
+
+<!-- TOOLS GRID -->
+<div class="tools-grid">
+
+  <!-- 1 Contrast Checker -->
+  <div class="tool-card" data-cat="color">
+    <div class="card-preview bg-purple" id="prev-contrast">
+      <span style="font-size:18px;font-weight:700;color:#fff;padding:6px 14px;border-radius:6px;" id="prev-contrast-text">Aa contrast</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-purple">Color</div>
+      <div class="card-title">Contrast Checker</div>
+      <div class="card-desc">Paste two hex colors, get WCAG AA/AAA pass/fail instantly.</div>
+      <button class="card-open" onclick="openTool('contrast')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 2 Palette Generator -->
+  <div class="tool-card" data-cat="color">
+    <div class="card-preview bg-purple" id="prev-palette" style="gap:4px;padding:20px;">
+      <div style="display:flex;gap:4px;width:100%;">
+        <div style="flex:1;height:80px;border-radius:6px;background:#EEEDFE;"></div>
+        <div style="flex:1;height:80px;border-radius:6px;background:#AFA9EC;"></div>
+        <div style="flex:1;height:80px;border-radius:6px;background:#7F77DD;"></div>
+        <div style="flex:1;height:80px;border-radius:6px;background:#534AB7;"></div>
+        <div style="flex:1;height:80px;border-radius:6px;background:#26215C;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-purple">Color</div>
+      <div class="card-title">Palette Generator</div>
+      <div class="card-desc">Enter a seed color, auto-generate a full design system ramp.</div>
+      <button class="card-open" onclick="openTool('palette')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 3 Type Scale -->
+  <div class="tool-card" data-cat="color">
+    <div class="card-preview bg-purple" style="flex-direction:column;align-items:flex-start;padding:18px 22px;justify-content:center;gap:4px;">
+      <span style="font-size:28px;font-weight:600;color:#e0d8ff;font-family:'DM Serif Display',serif;">Heading</span>
+      <span style="font-size:18px;color:#b08aff;">Subheading</span>
+      <span style="font-size:14px;color:#7a68cc;">Body text</span>
+      <span style="font-size:11px;color:#5a4caa;">Caption</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-purple">Typography</div>
+      <div class="card-title">Type Scale Calculator</div>
+      <div class="card-desc">Pick a base size and ratio, preview a full modular type scale.</div>
+      <button class="card-open" onclick="openTool('typescale')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 4 Font Pairing -->
+  <div class="tool-card" data-cat="color">
+    <div class="card-preview bg-purple" style="flex-direction:column;align-items:flex-start;padding:18px 22px;justify-content:center;">
+      <span style="font-size:24px;font-family:'DM Serif Display',serif;color:#e0d8ff;">Display font</span>
+      <span style="font-size:14px;font-family:'Sora',sans-serif;color:#9888cc;margin-top:6px;">Body copy pairs beautifully with the heading above.</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-purple">Typography</div>
+      <div class="card-title">Font Pairing Preview</div>
+      <div class="card-desc">Preview heading + body Google Font combos with live text.</div>
+      <button class="card-open" onclick="openTool('fontpair')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 5 Spacing Visualizer -->
+  <div class="tool-card" data-cat="layout">
+    <div class="card-preview bg-teal" style="flex-direction:column;gap:6px;justify-content:center;padding:20px;">
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span style="font-size:10px;font-family:monospace;color:#4fd4a0;width:28px;">4px</span>
+        <div style="height:4px;background:#4fd4a0;border-radius:2px;width:4px;"></div>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span style="font-size:10px;font-family:monospace;color:#4fd4a0;width:28px;">8px</span>
+        <div style="height:8px;background:#4fd4a0;border-radius:2px;width:8px;"></div>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span style="font-size:10px;font-family:monospace;color:#4fd4a0;width:28px;">16px</span>
+        <div style="height:16px;background:#4fd4a0;border-radius:2px;width:16px;"></div>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span style="font-size:10px;font-family:monospace;color:#4fd4a0;width:28px;">32px</span>
+        <div style="height:16px;background:#4fd4a0;border-radius:2px;width:32px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-teal">Layout</div>
+      <div class="card-title">Spacing Visualizer</div>
+      <div class="card-desc">Input a base unit, preview your full 4pt / 8pt spacing grid.</div>
+      <button class="card-open" onclick="openTool('spacing')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 6 Grid Builder -->
+  <div class="tool-card" data-cat="layout">
+    <div class="card-preview bg-teal" style="padding:20px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;">
+        <div style="height:80px;background:rgba(79,212,160,.15);border:1px solid rgba(79,212,160,.3);border-radius:4px;"></div>
+        <div style="height:80px;background:rgba(79,212,160,.15);border:1px solid rgba(79,212,160,.3);border-radius:4px;"></div>
+        <div style="height:80px;background:rgba(79,212,160,.15);border:1px solid rgba(79,212,160,.3);border-radius:4px;"></div>
+        <div style="height:80px;background:rgba(79,212,160,.15);border:1px solid rgba(79,212,160,.3);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-teal">Layout</div>
+      <div class="card-title">Grid Builder</div>
+      <div class="card-desc">Set columns, gutter, and margin — export CSS Grid or Tailwind.</div>
+      <button class="card-open" onclick="openTool('grid')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 7 Shadow Generator -->
+  <div class="tool-card" data-cat="layout">
+    <div class="card-preview bg-teal" style="padding:28px;">
+      <div style="width:100px;height:60px;background:#1c3d32;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);"></div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-teal">Layout</div>
+      <div class="card-title">Shadow Generator</div>
+      <div class="card-desc">Tweak offset, blur, spread, and opacity — live preview + CSS.</div>
+      <button class="card-open" onclick="openTool('shadow')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 8 Aspect Ratio -->
+  <div class="tool-card" data-cat="layout">
+    <div class="card-preview bg-teal" style="flex-direction:column;gap:8px;padding:20px;">
+      <div style="width:100%;height:56px;background:rgba(79,212,160,.2);border:2px dashed rgba(79,212,160,.5);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#4fd4a0;font-size:12px;font-family:monospace;">16 : 9</div>
+      <div style="width:60%;height:44px;background:rgba(79,212,160,.2);border:2px dashed rgba(79,212,160,.5);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#4fd4a0;font-size:12px;font-family:monospace;">4 : 3</div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-teal">Layout</div>
+      <div class="card-title">Aspect Ratio Tool</div>
+      <div class="card-desc">Lock a ratio and calculate missing width or height instantly.</div>
+      <button class="card-open" onclick="openTool('aspect')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 9 Dummy Text -->
+  <div class="tool-card" data-cat="copy">
+    <div class="card-preview bg-amber" style="flex-direction:column;align-items:flex-start;padding:18px;justify-content:center;gap:6px;">
+      <span style="font-size:12px;color:#f0c060;font-family:monospace;">Name: Alex Rivera</span>
+      <span style="font-size:12px;color:#f0c060;font-family:monospace;">Role: Product Designer</span>
+      <span style="font-size:12px;color:#f0c060;font-family:monospace;">Email: alex@studio.co</span>
+      <span style="font-size:12px;color:#f0c060;font-family:monospace;">City: San Francisco</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-amber">Copy</div>
+      <div class="card-title">Dummy Text Generator</div>
+      <div class="card-desc">Generate realistic UI copy — names, bios, emails, not Lorem Ipsum.</div>
+      <button class="card-open" onclick="openTool('dummy')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 10 SVG Cleaner -->
+  <div class="tool-card" data-cat="copy">
+    <div class="card-preview bg-amber" style="flex-direction:column;padding:18px;justify-content:center;gap:4px;">
+      <span style="font-size:11px;color:rgba(240,160,96,.4);font-family:monospace;">&lt;?xml version="1.0"?&gt;</span>
+      <span style="font-size:11px;color:#f0a060;font-family:monospace;">&lt;svg viewBox="0 0 24 24"&gt;</span>
+      <span style="font-size:11px;color:#f0a060;font-family:monospace;padding-left:12px;">&lt;path d="M12 2..."/&gt;</span>
+      <span style="font-size:11px;color:#f0a060;font-family:monospace;">&lt;/svg&gt;</span>
+      <span style="font-size:10px;color:#7a5828;margin-top:4px;">— 3.2kb saved</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-amber">Assets</div>
+      <div class="card-title">SVG Cleaner</div>
+      <div class="card-desc">Paste SVG markup, strip bloat, get a lean optimized version.</div>
+      <button class="card-open" onclick="openTool('svg')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 11 Icon Preview -->
+  <div class="tool-card" data-cat="copy">
+    <div class="card-preview bg-amber" style="flex-wrap:wrap;padding:20px;align-content:center;gap:12px;">
+      <span style="font-size:26px;color:#f0a060;">⬡</span>
+      <span style="font-size:26px;color:#f0a060;">◈</span>
+      <span style="font-size:26px;color:#f0a060;">⬟</span>
+      <span style="font-size:26px;color:#f0a060;">◉</span>
+      <span style="font-size:26px;color:#f0a060;">⬠</span>
+      <span style="font-size:26px;color:#f0a060;">◐</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-amber">Assets</div>
+      <div class="card-title">Icon Picker</div>
+      <div class="card-desc">Search common UI icons, copy SVG or React component code.</div>
+      <button class="card-open" onclick="openTool('icons')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 12 Gradient Generator -->
+  <div class="tool-card" data-cat="copy">
+    <div class="card-preview" id="prev-gradient" style="background:linear-gradient(135deg,#f0a060,#f06090);"></div>
+    <div class="card-body">
+      <div class="card-cat text-amber">Assets</div>
+      <div class="card-title">Gradient Generator</div>
+      <div class="card-desc">Build linear/radial gradients visually and copy the CSS.</div>
+      <button class="card-open" onclick="openTool('gradient')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 13 Token Converter -->
+  <div class="tool-card" data-cat="handoff">
+    <div class="card-preview bg-coral" style="flex-direction:column;align-items:flex-start;padding:18px;justify-content:center;gap:4px;">
+      <span style="font-size:11px;font-family:monospace;color:#f0855a;">--color-primary: #7F77DD;</span>
+      <span style="font-size:11px;font-family:monospace;color:#f0855a;">--color-accent: #4fd4a0;</span>
+      <span style="font-size:11px;font-family:monospace;color:rgba(240,133,90,.5);">primary: '#7F77DD',</span>
+      <span style="font-size:11px;font-family:monospace;color:rgba(240,133,90,.5);">accent: '#4fd4a0',</span>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-coral">Handoff</div>
+      <div class="card-title">Hex → Token Converter</div>
+      <div class="card-desc">Paste hex values, get CSS custom properties, JSON, or Tailwind.</div>
+      <button class="card-open" onclick="openTool('token')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 14 Rem / px -->
+  <div class="tool-card" data-cat="handoff">
+    <div class="card-preview bg-coral" style="flex-direction:column;justify-content:center;gap:8px;padding:28px;">
+      <div style="display:flex;align-items:baseline;gap:16px;justify-content:center;">
+        <span style="font-size:28px;color:#f0855a;font-family:'DM Mono',monospace;font-weight:500;">24px</span>
+        <span style="font-size:18px;color:#a06040;">⇄</span>
+        <span style="font-size:28px;color:#f0855a;font-family:'DM Mono',monospace;font-weight:500;">1.5rem</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-coral">Handoff</div>
+      <div class="card-title">Rem / px Converter</div>
+      <div class="card-desc">Enter a base font size and convert any px ↔ rem value.</div>
+      <button class="card-open" onclick="openTool('rem')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 15 Breakpoint Visualizer -->
+  <div class="tool-card" data-cat="handoff">
+    <div class="card-preview bg-coral" style="gap:8px;padding:20px;justify-content:center;">
+      <div style="width:30px;height:80px;background:rgba(240,133,90,.2);border:1px solid rgba(240,133,90,.4);border-radius:4px;"></div>
+      <div style="width:60px;height:70px;background:rgba(240,133,90,.2);border:1px solid rgba(240,133,90,.4);border-radius:4px;"></div>
+      <div style="width:90px;height:55px;background:rgba(240,133,90,.2);border:1px solid rgba(240,133,90,.4);border-radius:4px;"></div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-coral">Handoff</div>
+      <div class="card-title">Breakpoint Visualizer</div>
+      <div class="card-desc">See how a layout shifts across mobile, tablet, and desktop.</div>
+      <button class="card-open" onclick="openTool('breakpoint')">Open tool →</button>
+    </div>
+  </div>
+
+  <!-- 16 Easing Previewer -->
+  <div class="tool-card" data-cat="handoff">
+    <div class="card-preview bg-coral" style="padding:24px;">
+      <svg width="100%" height="100" viewBox="0 0 200 100" fill="none">
+        <path d="M10 90 C 60 90, 80 10, 190 10" stroke="#f0855a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="10" cy="90" r="5" fill="#f0855a"/>
+        <circle cx="190" cy="10" r="5" fill="#f0855a"/>
+        <line x1="10" y1="90" x2="60" y2="90" stroke="rgba(240,133,90,.3)" stroke-width="1" stroke-dasharray="3"/>
+        <line x1="190" y1="10" x2="80" y2="10" stroke="rgba(240,133,90,.3)" stroke-width="1" stroke-dasharray="3"/>
+        <circle cx="60" cy="90" r="4" fill="none" stroke="#f0855a" stroke-width="1.5"/>
+        <circle cx="80" cy="10" r="4" fill="none" stroke="#f0855a" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-cat text-coral">Handoff</div>
+      <div class="card-title">Easing Previewer</div>
+      <div class="card-desc">Edit a cubic-bezier curve, preview motion on a sample element.</div>
+      <button class="card-open" onclick="openTool('easing')">Open tool →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p><strong>designkit</strong> — 16 micro tools for designers. Built with HTML, CSS &amp; JS.</p>
+  <p style="margin-top:6px;">Made by <a href="https://rockstr.net/">Shukri Maslan</a> &amp; deploys via <a href="#">GitHub Actions</a>.</p>
+  <div class="footer-tags">
+    <span class="footer-tag">rockstr.net</span>
+    <span class="footer-tag">@workbyshuks</span>
+  </div>
+</footer>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal" id="modal-inner">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Tool</div>
+      <button class="modal-close" onclick="closeTool()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── NAV / FILTER ──
+function showSection(s) {
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (s === 'home') {
+    document.querySelector('.hero').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('section-tools').scrollIntoView({behavior:'smooth'});
+  }
+}
+function filterCards(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tool-card').forEach(c => {
+    c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat);
+  });
+}
+
+// ── MODAL ──
+function openTool(id) {
+  const titles = {
+    contrast:'Contrast Checker', palette:'Palette Generator', typescale:'Type Scale Calculator',
+    fontpair:'Font Pairing Preview', spacing:'Spacing Visualizer', grid:'Grid Builder',
+    shadow:'Shadow Generator', aspect:'Aspect Ratio Tool', dummy:'Dummy Text Generator',
+    svg:'SVG Cleaner', icons:'Icon Picker', gradient:'Gradient Generator',
+    token:'Hex → Token Converter', rem:'Rem / px Converter', breakpoint:'Breakpoint Visualizer',
+    easing:'Easing Previewer'
+  };
+  document.getElementById('modal-title').textContent = titles[id];
+  document.getElementById('modal-body').innerHTML = getToolHTML(id);
+  document.getElementById('modal').classList.add('open');
+  initTool(id);
+}
+function closeTool() { document.getElementById('modal').classList.remove('open'); }
+function closeOnOverlay(e) { if (e.target === document.getElementById('modal')) closeTool(); }
+
+// ── COPY HELPER ──
+function copyText(txt, btn) {
+  navigator.clipboard.writeText(txt).then(() => {
+    const orig = btn.textContent; btn.textContent = 'Copied!'; btn.style.color = '#c8f060';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1500);
+  });
+}
+
+// ── TOOL HTML ──
+function getToolHTML(id) {
+  const t = {
+    contrast: `
+      <div class="tool-row">
+        <div class="tool-col">
+          <label class="tool-label">Foreground</label>
+          <input class="tool-input" id="fg" value="#f0efe8" oninput="calcContrast()">
+        </div>
+        <div class="tool-col">
+          <label class="tool-label">Background</label>
+          <input class="tool-input" id="bg2" value="#0c0c0e" oninput="calcContrast()">
+        </div>
+      </div>
+      <div id="contrast-preview" style="border-radius:8px;padding:20px 24px;border:1px solid var(--border);margin-bottom:14px;">
+        <span style="font-size:22px;font-weight:600;" id="contrast-text">Sample Text</span>
+        <span style="font-size:14px;margin-left:12px;" id="contrast-small">Smaller text here</span>
+      </div>
+      <div id="contrast-result" class="tool-result"></div>`,
+
+    palette: `
+      <div class="tool-row">
+        <div class="tool-col">
+          <label class="tool-label">Seed Color</label>
+          <input class="tool-input" id="seed" value="#7F77DD" oninput="genPalette()">
+        </div>
+        <div class="tool-col" style="max-width:80px;">
+          <label class="tool-label">Steps</label>
+          <input class="tool-input" id="steps" type="number" value="7" min="3" max="12" oninput="genPalette()">
+        </div>
+      </div>
+      <div id="palette-chips" class="color-row"></div>
+      <div id="palette-codes" class="tool-result" style="margin-top:12px;"></div>
+      <button class="tool-btn secondary" onclick="copyText(document.getElementById('palette-codes').textContent, this)" style="margin-top:8px;">Copy all hex values</button>`,
+
+    typescale: `
+      <div class="grid-2" style="margin-bottom:16px;">
+        <div>
+          <label class="tool-label">Base size (px)</label>
+          <input class="tool-input" id="ts-base" type="number" value="16" oninput="calcTypeScale()">
+        </div>
+        <div>
+          <label class="tool-label">Ratio</label>
+          <select class="tool-input" id="ts-ratio" onchange="calcTypeScale()">
+            <option value="1.067">Minor Second — 1.067</option>
+            <option value="1.125">Major Second — 1.125</option>
+            <option value="1.2" selected>Minor Third — 1.200</option>
+            <option value="1.25">Major Third — 1.250</option>
+            <option value="1.333">Perfect Fourth — 1.333</option>
+            <option value="1.5">Perfect Fifth — 1.500</option>
+            <option value="1.618">Golden Ratio — 1.618</option>
+          </select>
+        </div>
+      </div>
+      <div id="typescale-preview"></div>
+      <div id="typescale-css" class="tool-result" style="margin-top:12px;"></div>`,
+
+    fontpair: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">Display font</label>
+          <select class="tool-input" id="fp-display" onchange="loadFontPair()">
+            <option>DM Serif Display</option><option>Playfair Display</option>
+            <option>Fraunces</option><option>Cormorant Garamond</option>
+            <option>Libre Baskerville</option>
+          </select>
+        </div>
+        <div>
+          <label class="tool-label">Body font</label>
+          <select class="tool-input" id="fp-body" onchange="loadFontPair()">
+            <option>Sora</option><option>Inter</option>
+            <option>Lato</option><option>Source Sans 3</option>
+            <option>Nunito</option>
+          </select>
+        </div>
+      </div>
+      <div id="fp-preview" style="border:1px solid var(--border);border-radius:8px;padding:24px;"></div>`,
+
+    spacing: `
+      <div class="tool-row">
+        <div class="tool-col">
+          <label class="tool-label">Base unit (px)</label>
+          <input class="tool-input" id="sp-base" type="number" value="4" oninput="calcSpacing()">
+        </div>
+        <div class="tool-col">
+          <label class="tool-label">Multipliers</label>
+          <input class="tool-input" id="sp-mults" value="1,2,3,4,6,8,10,12,16,20,24" oninput="calcSpacing()">
+        </div>
+      </div>
+      <div id="spacing-preview"></div>
+      <div id="spacing-css" class="tool-result" style="margin-top:12px;font-size:12px;max-height:160px;overflow-y:auto;"></div>`,
+
+    grid: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">Columns <span id="grid-cols-val">12</span></label>
+          <input type="range" id="grid-cols" min="1" max="24" value="12" oninput="calcGrid()">
+        </div>
+        <div>
+          <label class="tool-label">Gutter (px) <span id="grid-gutter-val">16</span></label>
+          <input type="range" id="grid-gutter" min="0" max="64" value="16" oninput="calcGrid()">
+        </div>
+        <div>
+          <label class="tool-label">Margin (px) <span id="grid-margin-val">24</span></label>
+          <input type="range" id="grid-margin" min="0" max="80" value="24" oninput="calcGrid()">
+        </div>
+        <div>
+          <label class="tool-label">Container (px) <span id="grid-container-val">1200</span></label>
+          <input type="range" id="grid-container" min="320" max="1600" step="40" value="1200" oninput="calcGrid()">
+        </div>
+      </div>
+      <div id="grid-preview" style="border:1px solid var(--border);border-radius:8px;padding:12px;overflow:hidden;"></div>
+      <div id="grid-css" class="tool-result" style="margin-top:12px;font-size:12px;"></div>`,
+
+    shadow: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">X offset <span id="sh-x-v">0</span>px</label>
+          <input type="range" id="sh-x" min="-40" max="40" value="0" oninput="calcShadow()">
+        </div>
+        <div>
+          <label class="tool-label">Y offset <span id="sh-y-v">8</span>px</label>
+          <input type="range" id="sh-y" min="-40" max="40" value="8" oninput="calcShadow()">
+        </div>
+        <div>
+          <label class="tool-label">Blur <span id="sh-blur-v">24</span>px</label>
+          <input type="range" id="sh-blur" min="0" max="80" value="24" oninput="calcShadow()">
+        </div>
+        <div>
+          <label class="tool-label">Spread <span id="sh-spread-v">0</span>px</label>
+          <input type="range" id="sh-spread" min="-20" max="40" value="0" oninput="calcShadow()">
+        </div>
+        <div>
+          <label class="tool-label">Opacity <span id="sh-op-v">30</span>%</label>
+          <input type="range" id="sh-opacity" min="0" max="100" value="30" oninput="calcShadow()">
+        </div>
+        <div>
+          <label class="tool-label">Color</label>
+          <input class="tool-input" id="sh-color" value="#000000" oninput="calcShadow()">
+        </div>
+      </div>
+      <div id="shadow-preview" style="border:1px solid var(--border);border-radius:8px;padding:28px;display:flex;align-items:center;justify-content:center;">
+        <div id="shadow-box" style="width:100px;height:70px;background:var(--bg3);border-radius:10px;"></div>
+      </div>
+      <div id="shadow-css" class="tool-result" style="margin-top:12px;"></div>`,
+
+    aspect: `
+      <div style="margin-bottom:16px;">
+        <label class="tool-label">Common ratios</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+          ${['16:9','4:3','1:1','3:2','21:9','9:16'].map(r => `<button class="tool-btn secondary" style="font-size:12px;padding:5px 10px;" onclick="setRatio('${r}')">${r}</button>`).join('')}
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">Ratio W</label>
+          <input class="tool-input" id="ar-rw" value="16" oninput="calcAspect()">
+        </div>
+        <div>
+          <label class="tool-label">Ratio H</label>
+          <input class="tool-input" id="ar-rh" value="9" oninput="calcAspect()">
+        </div>
+        <div>
+          <label class="tool-label">Width (px)</label>
+          <input class="tool-input" id="ar-w" value="1920" oninput="calcAspectFromW()">
+        </div>
+        <div>
+          <label class="tool-label">Height (px)</label>
+          <input class="tool-input" id="ar-h" value="1080" oninput="calcAspectFromH()">
+        </div>
+      </div>
+      <div id="aspect-preview" style="border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;"></div>`,
+
+    dummy: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">Type</label>
+          <select class="tool-input" id="dummy-type">
+            <option value="person">Person profile</option>
+            <option value="product">Product card</option>
+            <option value="article">Article metadata</option>
+            <option value="company">Company listing</option>
+            <option value="address">Address</option>
+          </select>
+        </div>
+        <div>
+          <label class="tool-label">Count</label>
+          <input class="tool-input" id="dummy-count" type="number" value="3" min="1" max="10">
+        </div>
+      </div>
+      <button class="tool-btn" onclick="genDummy()">Generate</button>
+      <div id="dummy-result" class="tool-result" style="margin-top:12px;max-height:280px;overflow-y:auto;font-size:12px;"></div>
+      <button class="tool-btn secondary" onclick="copyText(document.getElementById('dummy-result').textContent, this)" style="margin-top:8px;">Copy</button>`,
+
+    svg: `
+      <label class="tool-label">Paste SVG markup</label>
+      <textarea class="tool-input" id="svg-input" rows="6" style="resize:vertical;font-size:12px;" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; ...&gt;...&lt;/svg&gt;"></textarea>
+      <button class="tool-btn" onclick="cleanSVG()" style="margin-top:10px;">Clean SVG</button>
+      <div id="svg-result" class="tool-result" style="margin-top:12px;font-size:12px;max-height:200px;overflow-y:auto;"></div>
+      <div id="svg-stats" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>`,
+
+    icons: `
+      <label class="tool-label">Search icons</label>
+      <input class="tool-input" id="icon-search" placeholder="e.g. home, arrow, user..." oninput="searchIcons()" style="margin-bottom:12px;">
+      <div id="icon-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:8px;max-height:260px;overflow-y:auto;"></div>
+      <div id="icon-code" class="tool-result" style="margin-top:12px;display:none;"></div>`,
+
+    gradient: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">Color 1</label>
+          <input class="tool-input" id="gr-c1" value="#7F77DD" oninput="calcGradient()">
+        </div>
+        <div>
+          <label class="tool-label">Color 2</label>
+          <input class="tool-input" id="gr-c2" value="#f0855a" oninput="calcGradient()">
+        </div>
+        <div>
+          <label class="tool-label">Type</label>
+          <select class="tool-input" id="gr-type" onchange="calcGradient()">
+            <option>linear</option><option>radial</option>
+          </select>
+        </div>
+        <div>
+          <label class="tool-label">Angle <span id="gr-angle-v">135</span>°</label>
+          <input type="range" id="gr-angle" min="0" max="360" value="135" oninput="calcGradient()">
+        </div>
+      </div>
+      <div id="gradient-preview" style="height:120px;border-radius:8px;border:1px solid var(--border);"></div>
+      <div id="gradient-css" class="tool-result" style="margin-top:12px;"></div>`,
+
+    token: `
+      <label class="tool-label">Hex values (one per line, optionally: name #hex)</label>
+      <textarea class="tool-input" id="token-input" rows="5" style="resize:vertical;" placeholder="primary #7F77DD\naccent #4fd4a0\n#f0855a"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="tool-btn" onclick="genTokens('css')">CSS Vars</button>
+        <button class="tool-btn secondary" onclick="genTokens('json')">JSON</button>
+        <button class="tool-btn secondary" onclick="genTokens('tw')">Tailwind</button>
+      </div>
+      <div id="token-result" class="tool-result" style="margin-top:12px;font-size:12px;max-height:220px;overflow-y:auto;"></div>`,
+
+    rem: `
+      <div class="grid-2" style="margin-bottom:16px;">
+        <div>
+          <label class="tool-label">Base font size (px)</label>
+          <input class="tool-input" id="rem-base" type="number" value="16" oninput="calcRem()">
+        </div>
+        <div></div>
+        <div>
+          <label class="tool-label">px → rem</label>
+          <input class="tool-input" id="rem-px" type="number" value="24" oninput="pxToRem()">
+        </div>
+        <div>
+          <label class="tool-label">rem → px</label>
+          <input class="tool-input" id="rem-rem" type="number" step="0.01" value="1.5" oninput="remToPx()">
+        </div>
+      </div>
+      <div id="rem-result" class="tool-result"></div>
+      <div style="margin-top:16px;">
+        <label class="tool-label">Common sizes cheatsheet</label>
+        <div id="rem-table" style="font-family:var(--font-mono);font-size:12px;"></div>
+      </div>`,
+
+    breakpoint: `
+      <label class="tool-label">CSS / content to preview</label>
+      <textarea class="tool-input" id="bp-html" rows="4" style="resize:vertical;font-size:12px;" placeholder="&lt;div style='padding:20px;'&gt;My component&lt;/div&gt;"></textarea>
+      <button class="tool-btn" onclick="previewBreakpoints()" style="margin-top:10px;">Preview</button>
+      <div id="bp-preview" style="margin-top:16px;"></div>`,
+
+    easing: `
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label class="tool-label">X1 <span id="ez-x1-v">0.25</span></label>
+          <input type="range" id="ez-x1" min="0" max="1" step="0.01" value="0.25" oninput="calcEasing()">
+        </div>
+        <div>
+          <label class="tool-label">Y1 <span id="ez-y1-v">0.1</span></label>
+          <input type="range" id="ez-y1" min="-1" max="2" step="0.01" value="0.1" oninput="calcEasing()">
+        </div>
+        <div>
+          <label class="tool-label">X2 <span id="ez-x2-v">0.25</span></label>
+          <input type="range" id="ez-x2" min="0" max="1" step="0.01" value="0.25" oninput="calcEasing()">
+        </div>
+        <div>
+          <label class="tool-label">Y2 <span id="ez-y2-v">1</span></label>
+          <input type="range" id="ez-y2" min="-1" max="2" step="0.01" value="1" oninput="calcEasing()">
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+        ${[['ease','0.25,0.1,0.25,1'],['ease-in','0.42,0,1,1'],['ease-out','0,0,0.58,1'],['ease-in-out','0.42,0,0.58,1'],['spring','0.34,1.56,0.64,1']].map(([n,v])=>`<button class="tool-btn secondary" style="font-size:11px;padding:4px 9px;" onclick="setEasing('${v}')">${n}</button>`).join('')}
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <svg id="ez-curve" width="160" height="160" viewBox="-0.1 -0.1 1.2 1.2" style="border:1px solid var(--border);border-radius:8px;background:var(--bg3);flex-shrink:0;">
+          <line x1="0" y1="0" x2="1" y2="0" stroke="rgba(255,255,255,0.1)" stroke-width="0.01"/>
+          <line x1="0" y1="0" x2="0" y2="1" stroke="rgba(255,255,255,0.1)" stroke-width="0.01"/>
+          <line x1="1" y1="0" x2="1" y2="1" stroke="rgba(255,255,255,0.1)" stroke-width="0.01"/>
+          <line x1="0" y1="1" x2="1" y2="1" stroke="rgba(255,255,255,0.1)" stroke-width="0.01"/>
+          <path id="ez-path" stroke="#c8f060" stroke-width="0.04" fill="none" stroke-linecap="round"/>
+          <line id="ez-l1" stroke="rgba(200,240,96,0.35)" stroke-width="0.015" stroke-dasharray="0.04"/>
+          <line id="ez-l2" stroke="rgba(200,240,96,0.35)" stroke-width="0.015" stroke-dasharray="0.04"/>
+          <circle id="ez-p1" r="0.05" fill="#c8f060"/>
+          <circle id="ez-p2" r="0.05" fill="#c8f060"/>
+          <circle cx="0" cy="1" r="0.04" fill="var(--muted)"/>
+          <circle cx="1" cy="0" r="0.04" fill="var(--muted)"/>
+        </svg>
+        <div style="flex:1;">
+          <div id="ez-demo-wrap" style="overflow:hidden;height:40px;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;background:var(--bg3);position:relative;">
+            <div id="ez-demo-ball" style="width:36px;height:36px;border-radius:50%;background:var(--accent);position:absolute;top:2px;left:2px;"></div>
+          </div>
+          <button class="tool-btn" onclick="playEasing()" style="width:100%;margin-bottom:10px;">▶ Play</button>
+          <div id="ez-css" class="tool-result" style="font-size:12px;"></div>
+        </div>
+      </div>`
+  };
+  return t[id] || '<p style="color:var(--muted)">Tool not found.</p>';
+}
+
+// ── TOOL LOGIC ──
+function initTool(id) {
+  setTimeout(() => {
+    if (id==='contrast') calcContrast();
+    else if (id==='palette') genPalette();
+    else if (id==='typescale') calcTypeScale();
+    else if (id==='fontpair') loadFontPair();
+    else if (id==='spacing') calcSpacing();
+    else if (id==='grid') calcGrid();
+    else if (id==='shadow') calcShadow();
+    else if (id==='aspect') calcAspect();
+    else if (id==='gradient') calcGradient();
+    else if (id==='rem') { calcRem(); buildRemTable(); }
+    else if (id==='easing') calcEasing();
+    else if (id==='icons') searchIcons();
+  }, 50);
+}
+
+// CONTRAST
+function hexToRgb(hex) {
+  hex = hex.replace(/^#/,'');
+  if (hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  const n = parseInt(hex,16);
+  return [n>>16&255, n>>8&255, n&255];
+}
+function luminance([r,g,b]) {
+  return [r,g,b].map(c => { c/=255; return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); })
+    .reduce((acc,c,i) => acc + c*[0.2126,0.7152,0.0722][i], 0);
+}
+function contrastRatio(h1,h2) {
+  const [l1,l2] = [luminance(hexToRgb(h1)), luminance(hexToRgb(h2))].sort((a,b)=>b-a);
+  return ((l1+0.05)/(l2+0.05));
+}
+function calcContrast() {
+  const fg = document.getElementById('fg')?.value||'#f0efe8';
+  const bg = document.getElementById('bg2')?.value||'#0c0c0e';
+  const prev = document.getElementById('contrast-preview');
+  if(prev){ prev.style.background=bg; prev.style.color=fg; }
+  try {
+    const ratio = contrastRatio(fg,bg);
+    const r4 = ratio.toFixed(2);
+    const aa = ratio>=4.5, aaa = ratio>=7, aalg = ratio>=3;
+    document.getElementById('contrast-result').innerHTML =
+      `Ratio: ${r4}:1\n\nNormal text  AA ${aa?'✓ PASS':'✗ FAIL'}   AAA ${aaa?'✓ PASS':'✗ FAIL'}\nLarge text   AA ${aalg?'✓ PASS':'✗ FAIL'}   AAA ${aa?'✓ PASS':'✗ FAIL'}`;
+  } catch(e) { document.getElementById('contrast-result').textContent = 'Enter valid hex colors'; }
+}
+
+// PALETTE
+function hexToHsl(hex) {
+  let [r,g,b] = hexToRgb(hex).map(c=>c/255);
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0, s=0, l=(max+min)/2;
+  if(d){ s=l>0.5?d/(2-max-min):d/(max+min); if(max===r) h=(g-b)/d+(g<b?6:0); else if(max===g) h=(b-r)/d+2; else h=(r-g)/d+4; h/=6; }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+function hslToHex(h,s,l) {
+  s/=100; l/=100;
+  const k=n=>(n+h/30)%12;
+  const a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+  return '#'+[f(0),f(8),f(4)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
+}
+function genPalette() {
+  const seed = document.getElementById('seed')?.value||'#7F77DD';
+  const steps = parseInt(document.getElementById('steps')?.value||7);
+  try {
+    const [h,s] = hexToHsl(seed);
+    const lights = Array.from({length:steps}, (_,i) => Math.round(95 - (i/(steps-1))*90));
+    const colors = lights.map(l => hslToHex(h, Math.min(s+10,100), l));
+    const chips = document.getElementById('palette-chips');
+    if(chips){ chips.innerHTML = colors.map(c=>`<div class="color-chip" style="background:${c}" title="${c}" onclick="copyText('${c}',this)"></div>`).join(''); }
+    const codes = document.getElementById('palette-codes');
+    if(codes){ codes.textContent = colors.map((c,i)=>`step-${(i+1)*100}: ${c}`).join('\n'); }
+  } catch(e) {}
+}
+
+// TYPE SCALE
+const tsNames = ['xs','sm','base','md','lg','xl','2xl','3xl','4xl','5xl','6xl','7xl'];
+function calcTypeScale() {
+  const base = parseFloat(document.getElementById('ts-base')?.value||16);
+  const ratio = parseFloat(document.getElementById('ts-ratio')?.value||1.2);
+  const steps = 7; const offset = 2;
+  const sizes = Array.from({length:steps},(_,i)=>+(base*Math.pow(ratio,i-offset)).toFixed(2));
+  const preview = document.getElementById('typescale-preview');
+  if(preview){ preview.innerHTML = sizes.reverse().map((s,i)=>`<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:50px;">${s}px</span><span style="font-size:${s}px;color:var(--text);line-height:1.1;">${tsNames[steps-1-i]||'text'}</span></div>`).join(''); }
+  const css = document.getElementById('typescale-css');
+  if(css){ css.textContent = [...sizes].reverse().map((s,i)=>`--text-${tsNames[i]||i}: ${s}px; /* ${+(s/base).toFixed(3)}rem */`).join('\n'); }
+}
+
+// FONT PAIR
+function loadFontPair() {
+  const df = document.getElementById('fp-display')?.value||'DM Serif Display';
+  const bf = document.getElementById('fp-body')?.value||'Sora';
+  const link = document.createElement('link');
+  link.rel='stylesheet';
+  link.href=`https://fonts.googleapis.com/css2?family=${df.replace(/ /g,'+')}:wght@400;700&family=${bf.replace(/ /g,'+')}:wght@400;500&display=swap`;
+  document.head.appendChild(link);
+  const prev = document.getElementById('fp-preview');
+  if(prev) prev.innerHTML = `
+    <p style="font-family:'${df}',serif;font-size:26px;color:var(--text);margin-bottom:8px;line-height:1.1;">The quick brown fox</p>
+    <p style="font-family:'${bf}',sans-serif;font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:12px;">This is what your body copy looks like at 14px. Good typography creates hierarchy and guides the reader's eye through the layout naturally.</p>
+    <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Display: ${df} · Body: ${bf}</p>`;
+}
+
+// SPACING
+function calcSpacing() {
+  const base = parseFloat(document.getElementById('sp-base')?.value||4);
+  const mults = (document.getElementById('sp-mults')?.value||'1,2,3,4,6,8,10,12,16,20,24').split(',').map(Number).filter(n=>!isNaN(n));
+  const prev = document.getElementById('spacing-preview');
+  if(prev){ prev.innerHTML = mults.map(m=>{const px=Math.round(base*m); return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:36px;">${px}px</span><div style="height:${Math.min(px,40)}px;width:${Math.max(px,2)}px;max-width:300px;background:var(--accent);border-radius:2px;opacity:0.7;"></div><span style="font-size:11px;color:var(--muted);">× ${m}</span></div>`}).join(''); }
+  const css = document.getElementById('spacing-css');
+  if(css){ css.textContent = mults.map(m=>`--space-${m}: ${Math.round(base*m)}px;`).join('\n'); }
+}
+
+// GRID
+function calcGrid() {
+  const cols = parseInt(document.getElementById('grid-cols')?.value||12);
+  const gutter = parseInt(document.getElementById('grid-gutter')?.value||16);
+  const margin = parseInt(document.getElementById('grid-margin')?.value||24);
+  const container = parseInt(document.getElementById('grid-container')?.value||1200);
+  ['cols','gutter','margin','container'].forEach(k=>{ const el=document.getElementById(`grid-${k}-val`); if(el) el.textContent=document.getElementById(`grid-${k}`).value; });
+  const prev = document.getElementById('grid-preview');
+  if(prev){ prev.innerHTML=`<div style="display:grid;grid-template-columns:repeat(${Math.min(cols,12)},1fr);gap:${Math.max(2,gutter/4)}px;">${Array(Math.min(cols,12)).fill(`<div style="height:32px;background:rgba(200,240,96,.15);border:1px solid rgba(200,240,96,.3);border-radius:3px;"></div>`).join('')}</div>`; }
+  const css = document.getElementById('grid-css');
+  if(css){ css.textContent = `.grid {\n  display: grid;\n  grid-template-columns: repeat(${cols}, 1fr);\n  gap: ${gutter}px;\n  max-width: ${container}px;\n  margin: 0 auto;\n  padding: 0 ${margin}px;\n}`; }
+}
+
+// SHADOW
+function calcShadow() {
+  const x=document.getElementById('sh-x')?.value||0, y=document.getElementById('sh-y')?.value||8;
+  const blur=document.getElementById('sh-blur')?.value||24, spread=document.getElementById('sh-spread')?.value||0;
+  const op=document.getElementById('sh-opacity')?.value||30, color=document.getElementById('sh-color')?.value||'#000';
+  ['x','y','blur','spread'].forEach(k=>{const el=document.getElementById(`sh-${k}-v`);if(el)el.textContent=document.getElementById(`sh-${k}`).value;});
+  const el=document.getElementById('sh-op-v');if(el)el.textContent=op;
+  try {
+    const [r,g,b]=hexToRgb(color);
+    const shadow=`${x}px ${y}px ${blur}px ${spread}px rgba(${r},${g},${b},${(op/100).toFixed(2)})`;
+    const box=document.getElementById('shadow-box');if(box)box.style.boxShadow=shadow;
+    const css=document.getElementById('shadow-css');if(css)css.textContent=`box-shadow: ${shadow};`;
+  }catch(e){}
+}
+
+// ASPECT
+function calcAspect() { calcAspectFromW(); }
+function calcAspectFromW() {
+  const rw=parseFloat(document.getElementById('ar-rw')?.value||16), rh=parseFloat(document.getElementById('ar-rh')?.value||9);
+  const w=parseFloat(document.getElementById('ar-w')?.value||1920);
+  const h=Math.round(w*(rh/rw));
+  const hEl=document.getElementById('ar-h'); if(hEl) hEl.value=h;
+  updateAspectPreview(rw,rh,w,h);
+}
+function calcAspectFromH() {
+  const rw=parseFloat(document.getElementById('ar-rw')?.value||16), rh=parseFloat(document.getElementById('ar-rh')?.value||9);
+  const h=parseFloat(document.getElementById('ar-h')?.value||1080);
+  const w=Math.round(h*(rw/rh));
+  const wEl=document.getElementById('ar-w'); if(wEl) wEl.value=w;
+  updateAspectPreview(rw,rh,w,h);
+}
+function setRatio(r) { const [w,h]=r.split(':'); document.getElementById('ar-rw').value=w; document.getElementById('ar-rh').value=h; calcAspectFromW(); }
+function updateAspectPreview(rw,rh,w,h) {
+  const prev=document.getElementById('aspect-preview'); if(!prev) return;
+  const maxW=280, boxW=maxW, boxH=Math.round(boxW*(rh/rw));
+  prev.innerHTML=`<div style="width:${boxW}px;height:${Math.min(boxH,160)}px;background:rgba(200,240,96,.1);border:2px dashed rgba(200,240,96,.4);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;color:var(--accent);">${w} × ${h}</div><p style="margin-top:8px;font-family:var(--font-mono);font-size:12px;color:var(--muted);">Ratio ${rw}:${rh} · Diagonal ${Math.round(Math.sqrt(w*w+h*h))}px</p>`;
+}
+
+// DUMMY TEXT
+const firstNames=['Alex','Jordan','Sam','Morgan','Taylor','Casey','Riley','Drew','Avery','Quinn'];
+const lastNames=['Rivera','Kim','Patel','Johnson','Chen','Okafor','Martinez','Singh','Lee','Brown'];
+const companies=['Studio','Design Co','Labs','Creative','Works','Agency','Systems','Digital'];
+const cities=['San Francisco','London','Tokyo','Berlin','Amsterdam','Sydney','Toronto','Cape Town'];
+const roles=['Product Designer','UX Lead','Design Engineer','Visual Designer','Creative Director','UI Designer'];
+const adjectives=['innovative','seamless','intuitive','bold','minimal','dynamic'];
+const nouns=['solution','experience','platform','tool','workflow','interface'];
+function rnd(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+function genDummy() {
+  const type=document.getElementById('dummy-type')?.value||'person';
+  const count=parseInt(document.getElementById('dummy-count')?.value||3);
+  const out=[];
+  for(let i=0;i<count;i++){
+    const fn=rnd(firstNames), ln=rnd(lastNames);
+    if(type==='person') out.push(`Name: ${fn} ${ln}\nRole: ${rnd(roles)}\nEmail: ${fn.toLowerCase()}.${ln.toLowerCase()}@${rnd(['design','studio','creative'])}.io\nCity: ${rnd(cities)}\nBio: Passionate designer with expertise in ${rnd(['product','brand','UX','motion'])} design.\n`);
+    else if(type==='product') out.push(`Name: ${rnd(adjectives).charAt(0).toUpperCase()+rnd(adjectives).slice(1)} ${rnd(nouns).charAt(0).toUpperCase()+rnd(nouns).slice(1)}\nPrice: $${(Math.random()*200+10).toFixed(2)}\nSKU: ${Math.random().toString(36).slice(2,8).toUpperCase()}\nRating: ${(Math.random()*2+3).toFixed(1)} / 5\n`);
+    else if(type==='article') out.push(`Title: How ${rnd(adjectives)} ${rnd(nouns)}s are changing design in ${2024+Math.floor(Math.random()*2)}\nAuthor: ${fn} ${ln}\nDate: ${new Date(Date.now()-Math.random()*1e10).toLocaleDateString()}\nRead time: ${Math.ceil(Math.random()*12+2)} min\n`);
+    else if(type==='company') out.push(`Company: ${ln} ${rnd(companies)}\nIndustry: ${rnd(['SaaS','Design Tools','Creative Tech','Agency','Studio'])}\nEmployees: ${Math.round(Math.random()*500+10)}\nCity: ${rnd(cities)}\nWebsite: ${ln.toLowerCase()}${rnd(companies).toLowerCase().replace(/ /,'')}.com\n`);
+    else if(type==='address') out.push(`${Math.ceil(Math.random()*999)+1} ${rnd(lastNames)} ${rnd(['Street','Avenue','Boulevard','Lane','Road'])}\n${rnd(cities)}, ${Math.random().toString().slice(2,7).toUpperCase()}\n${rnd(['USA','UK','CA','AU','DE'])}\n`);
+  }
+  const r=document.getElementById('dummy-result'); if(r) r.textContent=out.join('\n---\n\n');
+}
+
+// SVG CLEANER
+function cleanSVG() {
+  const input=document.getElementById('svg-input')?.value||'';
+  const before=input.length;
+  let clean=input
+    .replace(/<!--[\s\S]*?-->/g,'')
+    .replace(/\s+/g,' ')
+    .replace(/>\s+</g,'><')
+    .replace(/\s*=\s*"/g,'="')
+    .replace(/ (xmlns:xlink|xml:space|enable-background|overflow|version)="[^"]*"/g,'')
+    .replace(/ id="[^"]*"/g,'')
+    .replace(/ data-[^=]*="[^"]*"/g,'')
+    .replace(/ style="[^"]*"/g,'')
+    .trim();
+  const after=clean.length;
+  const r=document.getElementById('svg-result'); if(r) r.textContent=clean;
+  const s=document.getElementById('svg-stats'); if(s) s.textContent=`Before: ${before} chars · After: ${after} chars · Saved: ${before-after} chars (${Math.round((before-after)/before*100)||0}%)`;
+}
+
+// ICONS
+const iconList = [
+  {name:'home',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>'},
+  {name:'user',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>'},
+  {name:'heart',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>'},
+  {name:'star',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>'},
+  {name:'settings',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><circle cx="12" cy="12" r="3"/>'},
+  {name:'search',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/>'},
+  {name:'mail',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/>'},
+  {name:'bell',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/>'},
+  {name:'lock',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/><path d="M8 11v-4a4 4 0 0 1 8 0v4"/>'},
+  {name:'trash',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3h6v3"/>'},
+  {name:'edit',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"/><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"/>'},
+  {name:'plus',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'},
+  {name:'arrow-right',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="5" y1="12" x2="19" y2="12"/><line x1="13" y1="18" x2="19" y2="12"/><line x1="13" y1="6" x2="19" y2="12"/>'},
+  {name:'download',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><polyline points="7 11 12 16 17 11"/><line x1="12" y1="4" x2="12" y2="16"/>'},
+  {name:'upload',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/>'},
+  {name:'calendar',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/><line x1="11" y1="15" x2="12" y2="15"/><line x1="12" y1="15" x2="12" y2="18"/>'},
+  {name:'check',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10"/>'},
+  {name:'x',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'},
+  {name:'menu',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>'},
+  {name:'layout',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2"/><rect x="4" y="13" width="6" height="7" rx="2"/><rect x="14" y="4" width="6" height="16" rx="2"/>'},
+  {name:'image',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>'},
+  {name:'link',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-1.5 1.5"/><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l1.5 -1.5"/>'},
+  {name:'code',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="7 8 3 12 7 16"/><polyline points="17 8 21 12 17 16"/><line x1="14" y1="4" x2="10" y2="20"/>'},
+  {name:'copy',svg:'<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"/>'},
+];
+let iconsShown = iconList;
+function searchIcons() {
+  const q=(document.getElementById('icon-search')?.value||'').toLowerCase();
+  iconsShown = q ? iconList.filter(i=>i.name.includes(q)) : iconList;
+  const grid=document.getElementById('icon-grid');
+  if(!grid) return;
+  grid.innerHTML = iconsShown.map(i=>`
+    <div onclick="selectIcon('${i.name}')" title="${i.name}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:var(--bg3);transition:border-color .15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text);">${i.svg}</svg>
+      <span style="font-size:9px;color:var(--muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50px;">${i.name}</span>
+    </div>`).join('');
+}
+function selectIcon(name) {
+  const icon = iconList.find(i=>i.name===name);
+  if(!icon) return;
+  const svgCode=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${icon.svg}</svg>`;
+  const reactCode=`<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">${icon.svg}</svg>`;
+  const code=document.getElementById('icon-code');
+  if(code){ code.style.display='block'; code.textContent=`SVG:\n${svgCode}\n\nReact JSX:\n${reactCode}`; }
+}
+
+// GRADIENT
+function calcGradient() {
+  const c1=document.getElementById('gr-c1')?.value||'#7F77DD';
+  const c2=document.getElementById('gr-c2')?.value||'#f0855a';
+  const type=document.getElementById('gr-type')?.value||'linear';
+  const angle=document.getElementById('gr-angle')?.value||135;
+  const el=document.getElementById('gr-angle-v'); if(el) el.textContent=angle;
+  const css = type==='radial' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(${angle}deg, ${c1}, ${c2})`;
+  const prev=document.getElementById('gradient-preview'); if(prev) prev.style.background=css;
+  const res=document.getElementById('gradient-css'); if(res) res.textContent=`background: ${css};`;
+}
+
+// TOKEN CONVERTER
+function genTokens(format) {
+  const lines=(document.getElementById('token-input')?.value||'').trim().split('\n').filter(Boolean);
+  const tokens = lines.map(l => {
+    const parts = l.trim().split(/\s+/);
+    if(parts.length>=2 && parts[parts.length-1].startsWith('#')) return { name: parts.slice(0,-1).join('-').toLowerCase().replace(/[^a-z0-9-]/g,'-'), hex: parts[parts.length-1] };
+    if(parts[0].startsWith('#')) return { name: 'color-'+parts[0].slice(1).toLowerCase(), hex: parts[0] };
+    return null;
+  }).filter(Boolean);
+  let out='';
+  if(format==='css') out=`:root {\n${tokens.map(t=>`  --${t.name}: ${t.hex};`).join('\n')}\n}`;
+  else if(format==='json') out=JSON.stringify(Object.fromEntries(tokens.map(t=>[t.name,{value:t.hex,type:'color'}])),null,2);
+  else if(format==='tw') out=`// tailwind.config.js\ncolors: {\n${tokens.map(t=>`  '${t.name}': '${t.hex}',`).join('\n')}\n}`;
+  const r=document.getElementById('token-result'); if(r) r.textContent=out||'Enter: name #hex (one per line)';
+}
+
+// REM / PX
+function calcRem() { pxToRem(); buildRemTable(); }
+function pxToRem() {
+  const base=parseFloat(document.getElementById('rem-base')?.value||16);
+  const px=parseFloat(document.getElementById('rem-px')?.value||0);
+  const rem=(px/base).toFixed(4);
+  const el=document.getElementById('rem-rem'); if(el) el.value=parseFloat(rem);
+  updateRemResult(base,px,parseFloat(rem));
+}
+function remToPx() {
+  const base=parseFloat(document.getElementById('rem-base')?.value||16);
+  const rem=parseFloat(document.getElementById('rem-rem')?.value||0);
+  const px=(rem*base).toFixed(2);
+  const el=document.getElementById('rem-px'); if(el) el.value=parseFloat(px);
+  updateRemResult(base,parseFloat(px),rem);
+}
+function updateRemResult(base,px,rem) {
+  const r=document.getElementById('rem-result');
+  if(r) r.textContent=`${px}px = ${rem}rem  (base: ${base}px)\n${rem}rem = ${px}px`;
+}
+function buildRemTable() {
+  const base=parseFloat(document.getElementById('rem-base')?.value||16);
+  const sizes=[10,12,14,16,18,20,24,28,32,36,48,64];
+  const t=document.getElementById('rem-table');
+  if(t) t.innerHTML=`<table style="width:100%;border-collapse:collapse;"><tr><th style="text-align:left;padding:4px 8px;color:var(--muted);font-weight:400;">px</th><th style="text-align:right;padding:4px 8px;color:var(--muted);font-weight:400;">rem</th></tr>`+sizes.map(px=>`<tr><td style="padding:3px 8px;color:var(--text);">${px}px</td><td style="padding:3px 8px;text-align:right;color:var(--accent);">${(px/base).toFixed(3)}rem</td></tr>`).join('')+`</table>`;
+}
+
+// BREAKPOINTS
+function previewBreakpoints() {
+  const html=document.getElementById('bp-html')?.value||'<div style="padding:20px;background:var(--bg3);border-radius:8px;">Component preview</div>';
+  const bps=[{label:'Mobile',w:375},{label:'Tablet',w:768},{label:'Desktop',w:1280}];
+  const prev=document.getElementById('bp-preview');
+  if(prev) prev.innerHTML=bps.map(bp=>`
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px;">${bp.label} — ${bp.w}px</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <iframe srcdoc="<style>*{box-sizing:border-box;font-family:system-ui,sans-serif;color:#f0efe8;background:#141416;}:root{--bg3:#1c1c20;}</style>${html.replace(/"/g,"'")}" style="width:100%;height:80px;border:none;background:var(--bg2);display:block;" scrolling="no"></iframe>
+      </div>
+    </div>`).join('');
+}
+
+// EASING
+function calcEasing() {
+  const x1=parseFloat(document.getElementById('ez-x1')?.value||0.25);
+  const y1=parseFloat(document.getElementById('ez-y1')?.value||0.1);
+  const x2=parseFloat(document.getElementById('ez-x2')?.value||0.25);
+  const y2=parseFloat(document.getElementById('ez-y2')?.value||1);
+  ['x1','y1','x2','y2'].forEach(k=>{const el=document.getElementById(`ez-${k}-v`);if(el)el.textContent=parseFloat(document.getElementById(`ez-${k}`).value).toFixed(2);});
+  const N=40;
+  const pts=[];
+  for(let i=0;i<=N;i++){
+    const t=i/N;
+    const bx=3*x1*t*(1-t)*(1-t)+3*x2*t*t*(1-t)+t*t*t;
+    const by=3*y1*t*(1-t)*(1-t)+3*y2*t*t*(1-t)+t*t*t;
+    pts.push([bx,1-by]);
+  }
+  const path=document.getElementById('ez-path');
+  if(path) path.setAttribute('d',`M ${pts.map(p=>p.join(' ')).join(' L ')}`);
+  const l1=document.getElementById('ez-l1'); if(l1){l1.setAttribute('x1','0');l1.setAttribute('y1','1');l1.setAttribute('x2',x1.toString());l1.setAttribute('y2',(1-y1).toString());}
+  const l2=document.getElementById('ez-l2'); if(l2){l2.setAttribute('x1','1');l2.setAttribute('y1','0');l2.setAttribute('x2',x2.toString());l2.setAttribute('y2',(1-y2).toString());}
+  const p1=document.getElementById('ez-p1'); if(p1){p1.setAttribute('cx',x1.toString());p1.setAttribute('cy',(1-y1).toString());}
+  const p2=document.getElementById('ez-p2'); if(p2){p2.setAttribute('cx',x2.toString());p2.setAttribute('cy',(1-y2).toString());}
+  const css=document.getElementById('ez-css'); if(css) css.textContent=`transition: all 600ms cubic-bezier(${x1}, ${y1}, ${x2}, ${y2});`;
+}
+function setEasing(v) {
+  const [x1,y1,x2,y2]=v.split(',').map(parseFloat);
+  ['x1','y1','x2','y2'].forEach((k,i)=>{const el=document.getElementById(`ez-${k}`);if(el)el.value=[x1,y1,x2,y2][i];});
+  calcEasing();
+}
+let easingAnim=null;
+function playEasing() {
+  const x1=parseFloat(document.getElementById('ez-x1')?.value||0.25);
+  const y1=parseFloat(document.getElementById('ez-y1')?.value||0.1);
+  const x2=parseFloat(document.getElementById('ez-x2')?.value||0.25);
+  const y2=parseFloat(document.getElementById('ez-y2')?.value||1);
+  const ball=document.getElementById('ez-demo-ball');
+  const wrap=document.getElementById('ez-demo-wrap');
+  if(!ball||!wrap) return;
+  const maxX=wrap.offsetWidth-40;
+  ball.style.transition='none'; ball.style.left='2px';
+  setTimeout(()=>{
+    ball.style.transition=`left 600ms cubic-bezier(${x1},${y1},${x2},${y2})`;
+    ball.style.left=maxX+'px';
+    setTimeout(()=>{
+      ball.style.transition=`left 600ms cubic-bezier(${x1},${y1},${x2},${y2})`;
+      ball.style.left='2px';
+    },700);
+  },50);
+}
+
+// keyboard close
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTool(); });
+</script>
+</body>
+</html>
