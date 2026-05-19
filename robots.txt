@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shukrimaslan.github.io/designertools/sitemap.xml
