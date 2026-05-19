@@ -84,5 +84,5 @@ The project explores:
 
 Created by **Shukri Maslan**
 
-GitHub: [shukrimaslan](https://github.com/shukrimaslan)  
+GitHub: [shukrimaslan](https://github.com/shukrimaslan)
 Website: [rockstr.net](https://rockstr.net/)
